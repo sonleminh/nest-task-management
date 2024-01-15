@@ -20,6 +20,16 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async validateUser(username: string) {
+    const user: User = await this.userRepository.findOne({
+      where: {
+        username: username,
+      },
+    });
+    console.log(user);
+    return user;
+  }
+
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
     const { username, password } = authCredentialsDto;
 
