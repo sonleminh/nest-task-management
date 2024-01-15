@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'wherefuture',
+      password: 'postgres',
       database: 'task-management',
       entities: [Task],
       autoLoadEntities: true,

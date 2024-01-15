@@ -6,10 +6,14 @@ import { User } from './user.entity';
 import { AuthService } from './auth.service';
 import { JwtPayload } from './jwt-payload.interface';
 import { UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private authService: AuthService, // @InjectRepository(AuthService.userRepository) // private usersRepository: User,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    // private authService: AuthService, 
+    // @InjectRepository(AuthService.userRepository) // private usersRepository: User,
   ) {
     super({
       secretOrKey: 'topSecret51',
@@ -17,14 +21,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    // const { username } = payload;
-    // const user: User = await this.authService.validateUser(username);
-    // console.log('1:', user);
-    // if (!user) {
-    //   throw new UnauthorizedException();
-    // }
-    // return user;
-    return payload;
+  async validate(payload: JwtPayload) {
+    const { username } = payload;
+    const user: User = await this.userRepository.findOne({
+      where: { username: username },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return user;
   }
 }
